@@ -2,7 +2,9 @@
 title: '`Tidyverse` in R (Part 1): An Overview'
 author: "Hoang Anh NGO"
 date: "11/25/2019"
+bibliography: references_overview.bib
 output: html_document
+nocite: '@*'
 ---
 
 Data scientists/analysts spend a huge amount of time cleaning and preparing data. That's not a secret that everyone is trying to hide, and multiple surveys have shown that.
@@ -17,7 +19,7 @@ Now, what exactly `Tidyverse` is? According to the official website (tidyverse.o
 
 2. "All packages share an underlying philosophy and common APIs" - This is one of the most important that makes `Tidyverse` stand out: all the packages integrate and work together harmoniously. 
 
-3. "`Tidyverse` is designed for data science" - Before, `R` is usually defined as a language/environment for statistical computing and graphics. Here, `Tidyverse` does not do a lot related to statistics, but it can help you with every step on the way of preparing your data. You can read, modify (reshape, tidy, etc.), and visualize data a lot 
+3. "`Tidyverse` is designed for data science" - Before, `R` is usually defined as a language/environment for statistical computing and graphics. Here, `Tidyverse` does not do a lot related to statistics, but it can help you with every step on the way of preparing your data. You can read, modify (reshape, tidy, etc.), and visualize data a lot easier.
 
 # Some of the packages in `Tidyverse`
 
@@ -95,5 +97,4 @@ In learning and mastering `tidyverse`, the best book that can be used as a refer
 
 In the upcoming part, we will have a look at one of the most common packages in `tidyverse`'s core to manipulate datasets in `R` - `dplyr`.
 
-
-
+# References
