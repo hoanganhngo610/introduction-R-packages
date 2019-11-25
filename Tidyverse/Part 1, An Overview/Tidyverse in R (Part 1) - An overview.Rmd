@@ -1,0 +1,99 @@
+---
+title: '`Tidyverse` in R (Part 1): An Overview'
+author: "Hoang Anh NGO"
+date: "11/25/2019"
+output: html_document
+---
+
+Data scientists/analysts spend a huge amount of time cleaning and preparing data. That's not a secret that everyone is trying to hide, and multiple surveys have shown that.
+
+Unfortunately, this is among the least interesting things that a data-related person wants to do. It is an inevitable part of the job. We can not build powerful and accurate models without ensuring that our data is clean and well-prepared.
+
+# Introduction to `Tidyverse`
+
+Now, what exactly `Tidyverse` is? According to the official website (tidyverse.org), "The `tidyverse` is an opinionated collection of `R` packages designed for data science. All packages share an underlying philosophy and common APIs." Let's break this statement down.
+
+1. "It is an opinionated collection of `R` packages" - When we install the `Tidyverse` package, what we are doing is actually instally several packages simultaneously. Some of the packages in `Tidyverse` include `dplyr`, `tidyr`, or `ggplot2` are among the most commonly used `R` packages. There are also other useful packages that are parts of this ecosystem, but are not installed automatically with the package.  These were mostly developed by Hadley Wickham himself, but they are now being expanded by several contributors.
+
+2. "All packages share an underlying philosophy and common APIs" - This is one of the most important that makes `Tidyverse` stand out: all the packages integrate and work together harmoniously. 
+
+3. "`Tidyverse` is designed for data science" - Before, `R` is usually defined as a language/environment for statistical computing and graphics. Here, `Tidyverse` does not do a lot related to statistics, but it can help you with every step on the way of preparing your data. You can read, modify (reshape, tidy, etc.), and visualize data a lot 
+
+# Some of the packages in `Tidyverse`
+
+To give you an idea of what the package `Tidyverse` can do, here is a very brief summary of some of its most common packages.
+
++ `ggplot2`: `ggplot2` is a plotting system for R, based on the grammar of graphics, which tries to take the good parts of base and lattice graphics and none of the bad parts. There are two major functions that we will mainly use in `ggplot2`, which are `qplot()` for quick plots and `ggplot()` for fine and granular control of everything
+
++ `dplyr`: `dplyr` is a new package which provides a set of tools for efficiently manipulating datasets in `R`. `dplyr` is the next iteration of `plyr`, docusing on only data frames.
+
++ `tidyr`: `tidyr` helps tyding your data a lot easier. It is often used in conjuction with `dplyr`
+
++ `readxl`: This package makes it easy to get data our of `Excel` and into `R`. Compared to many of the other similar packages, `readxl` has no external dependencies, so it's easy to install and use on all operating systems.
+
++ `forcats`: The goal of this package is to provide a suite of tools that solve common problems with factors, including changing the order of levels or the values. 
+
++ `stringr`: This package provide a cohesive set of functions designed to make working with strings as easy as possible. It focuses on the most important and commonly used string manipulation functions. 
+
+This following figures illustrates cannonical data science workflow, and shows how the individual packages fit in. 
+
+<center><img src="https://rviews.rstudio.com/post/2017-06-09-What-is-the-tidyverse_files/tidyverse1.png"></center>
+<center>_Tidyverse packages in data science workflow (Source: <https://rviews.rstudio.com>)_</center>
+
+# Advantages
+
+There are many advantages upon using `Tidyverse`, including:
+
++ Consistency
++ Workflow coverage
++ Critical mass
++ Enhanced productivity
++ etc.
+
+## Consistency
+
+Its consistency is deeply rooted in the fact that variables, functions and operators follow regular patterns and syntax. For example, the first argument of every function will be a tiny data frame (one row per observation, one column per variable, and one entry by cell). To perform operations, one can intuitively connect a sequence of commands, base functions, and operators to create a tidy pipeline (high-level consistency).
+
+Besides, the organization of core packages, the cody style and testing procedures make up the lower level of consistency.
+
+## Workflow coverage
+
+As mentioned, the sole purpose of the creation of `tidyverse` is for statisticians and data scientists to boost their productivity. Also, this is an attempt to reproduce and abstract the Canonical Data Science Workflow (figure below) into an actual usable product. Or, in other words, this package brings to life the by-the-book definition of an effective data science workflow.
+
+<center><img src="https://www.kdnuggets.com/wp-content/uploads/tidyverse2.png"></center>
+<center>_Canonical Data Science Workflow (Source: <https://www.kdnuggets.com>)_</center>
+
+Finally, as there is one-to-one relationship between the workflow and the sub-packages in `tidyverse`, it is extremely easy to establish an end-to-end workflow responding to any analytical purposes and types of data.
+
+## Popularity
+
+As an open-source project, a greath strength of `R` language is that there have been tens of thousands of users contributiing packages (on CRAN alone). However, there is a drawback for this. As the contributors may work independently, the overlapping of functions and features of different packages is inevitable. As such, people may have a hard time making decisions on which package (or suites of packages) to install and make an effort to learn.
+
+At the moment, `tidyverse` has had a large community of users, backed by a team of committed developers and maintainers, among R-using data scientists and analysts. Its principles have even been propagating into other fields, for example Finance with `tidyquant`.
+
+## Enhanced productivity
+
+The author of these packages, Hadley Wickham, has always been clear that a major goal for the `tidyverse` - and probably most of his work over the year with packages - has been to help anyone whose work is to deal with data become more productive. He is realy fond of a quote from Hai Abelson: "Programs must be written for people to read and only incidentally for machines to exercise." As such, the main reason for the popularity of `tidyverse` is that it helps people achive higher productivity and maintain flow in their everyday work with data.
+
+# `tidyverse` in a bigger picture
+
+Of course, `tidyverse` still has a lot of limitations, and it should not be the only set of tools taught/mastered relating to data work. The philosophy and consistency of the `tidyverse` are still fairly young and do not apply for all of the other packages in `R`.
+
+A powerful, but perhaps under-appreciated, capability of the R language is its ability to support the design and programming of Domain Specific Languages. With that being said, we can consider `tidyverse` can be seen as sub-dialect of the R language that is evolving to express ideas and tasks inherent in Data Science workflows and software development. 
+ 
+# Installation
+
+Just like any other `R` packages, installing `tidyverse` is straightforward, as follow.
+
+```{r, eval = FALSE}
+install.packages("tidyverse")
+```
+
+# Resources
+
+In learning and mastering `tidyverse`, the best book that can be used as a reference (or even a guideline to follow) would be R for Data Science, written by Hadley Wickham and Garrett Grolemund. The free online version of this book can be found [here](https://r4ds.had.co.nz/)
+
+In the upcoming part, we will have a look at one of the most common packages in `tidyverse`'s core to manipulate datasets in `R` - `dplyr`.
+
+
+
