@@ -1,9 +1,14 @@
 ---
 title: '`Tidyverse` in R (Part 1): An Overview'
-author: "Hoang Anh NGO"
-date: "11/25/2019"
+author: Hoang Anh NGO (École Polytechnique)
+date: "25 November 2019"
 bibliography: references_overview.bib
-output: html_document
+output: 
+  html_document:
+    number_sections: yes
+    theme: sandstone
+    toc: yes
+    toc_depth: 4
 nocite: '@*'
 ---
 

@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/553547/75f067f46fb041f5a9057758a9c6918d
+bundleId: https://api.rpubs.com/api/v1/document/553547/75f067f46fb041f5a9057758a9c6918d
+url: http://rpubs.com/hoanganhngo610/553547
+when: 1574777700.13789
