@@ -1,0 +1,324 @@
+---
+title: 'Correlation between numerical variables'
+author: Hoang Anh NGO (École Polytechnique)
+date: "5 December 2019"
+bibliography: references_correlation_numerical.bib
+output: 
+  html_document:
+    number_sections: yes
+    theme: sandstone
+    toc: yes
+    toc_depth: 4
+nocite: '@*'
+---
+
+# What is a correlation coefficient?
+
+A correlation coefficient is a numerical measure of some type of correlation, meaning a statistical relationship between two variables. The variables may be two columns of a given data set of observations, often called a sample, or two components of a multivariate random variable with a known distribution.
+
+Several types of correlation coefficient exist, each with their own definition and own range of usability and characteristics. They all assume values in the range from $−1$ to $+1$, where $\pm 1$ indicates the strongest possible agreement and 0 the strongest possible disagreement. As tools of analysis, correlation coefficients present certain problems, including the propensity of some types to be distorted by outliers and the possibility of incorrectly being used to infer a causal relationship between the variables
+
+# Pearson R correlation coefficient
+
+## Definition 
+
+**Pearson correlation coefficient**, also referred to as **Pearson's R**, is a measure of the linear correlation between two variables X and Y. This is the best-known and most commonly used type of correlation coefficient. 
+
+According to the Cauchy-Schwarz inequality, it has a value between $+1$ and $-1$, where 
+
++ $1$ is total positive correlation
++ $0$ is no linear correlation
++ $-1$ is total negative linear correlation
+
+## Formula 
+
+Pearson's correlation coefficient when applied to a sample is commonly represented by $r_{xy}$ and may be referred to as the sample correlation coefficient or the sample Pearson correlation coefficient. Given paried data $\{ (x_1, y_1), (x_2, y_2),..., (x_n, y_n) \}$ consisting of $n$ paris, $r_{xy}$ is defined as:
+
+$$
+r_{xy} = \frac{n \sum x_i y_i - \sum x_i \sum y_i}{\sqrt{n \sum x_i^2 - \left( \sum x_i\right)^2} \sqrt{n \sum y_i^2 - \left( \sum y_i\right)^2}}
+$$
+
+where 
+
++ $n$ is the sample size
+
++ $x_i, y_i$ are the individual sample points indexed with $i$
+
+## Assumptions
+
+There are some assumptions relating to the usage of **Pearson R** correlation coefficient:
+
++ Both variables should be normally distributed 
+
++ **Linearity**: Linearity assumes a straight line relationship between each of the two variables
+
++ **Homoscedasticity**: Homoscedasticity assumes that data is equally distributed around the regression line
+
+# Rank correlation coefficient
+
+##Definition 
+
+A rank correlation coefficient measures the degree of similarity between two rankings, and can be used to assess the significance of the relation between them. Some of the most popular rank correlation statistics include:
+
++ Spearman's $\rho$
++ Kendall's $\tau$
++ Goodman and Kruskai's $\gamma$
++ Somers' $D$
+
+Within this the scope of this tutorial, we only consider two of the most popular rank correlations coefficient (Spearman's $\rho$ and Kendall's $\tau$) for the following reasons:
+
++ @daniels1944 showed that Kendall's $\tau$ (tau) and Spearman's $\rho$ (rho) are particular cases of a general correlation coefficient
++ The built in function of `R` to calculate the correlation (or covariance) between two variables, `cor`, offer three different methods: Pearson (default), Kendall and Spearman
+
+## Kendall rank correlation coefficient (Kendall's $\tau$)
+
+### Definition
+
+**Kendall rank correlation coefficient**, commonly referred to as **Kendall's $\tau$**, is a statistic used to measure the ordinal association between two measured quantities. It is a measure of rank correlation: the similarity of the orderings of the data when ranked by each of the quantities.
+
+### Formula 
+
+Let $(x_1, y_1), (x_2, y_2), ..., (x_n, y_n)$ be a set of observations of the joint random variables X and Y respectively, such that all the values of $(x_i)$ and $(y_i)$ are unique. Any pair of observations $(x_i, y_i)$ and $(x_j,y_j)$, where $i < j$, are said to be 
+
+- **concordant** if the ranks for both elements (more precisely, the sort order by $x$ and by $y$) agree: that is, if
+
+    + both $x_i > x_j$ and $y_i > y_j$; or,
+    + both $x_i < x_j$ and $y_i < y_j$
+  
+- **discordant** if 
+
+    + both $x_i > x_j$ and $y_i < y_j$; or,
+    + both $x_i < x_j$ and $y_i > y_j$
+
++ neither **concordant** or **discordant** if $x_i = x_j$ or $y_i = y_j$
+
+The Kendall $\tau$ coefficient is defined as:
+
+$$
+\tau = \frac{\text{(number of concordant pairs)} - \text{(number of discordant pairs)}}{\left( \begin{matrix} n \\ 2 \end{matrix} \right)}
+$$
+
+An explicit expression for Kendall's rank coefficient would be:
+
+$$
+\tau = \frac{2}{n(n-1)} \times \sum_{i < j} \text{sgn}(x_i - x_j) \text{sgn}(y_i - y_j)
+$$
+
+### Assumptions
+
+In order to ensure that we obtain valid results (not just numbers on monitors), we need to make sure that our data satisfies the following assumptions
+
++ The variables are measured on an **ordinal** or **continuous** scale
++ (*Desirable*) The data appears to follow a monotonic relationship (i.e. as the value of one variable increases, so does the other variable and vice versa)
+
+### Hypothesis test
+
+The Kendall rank coefficient is often used as a test statistic in a statistical hypothesis test to establish whether two variables may be regarded as statistically dependent. This test is non-parametric, as it does not rely on any assumptions on the distributions of $X$ or $Y$ or the distribution of $(X,Y)$.
+
+Under the null hypothesis of independence of X and Y, the sampling distribution of τ has an expected value of zero. The precise distribution cannot be characterized in terms of common distributions, but may be calculated exactly for small samples; for larger samples, it is common to use an approximation to the normal distribution, with mean $0$ and variance $\frac{2(2n+5)}{9n(n-1)}$.
+
+## Spearman rank correlation coefficient (Spearman's $\rho$)
+
+### Definition
+
+**Spearman rank correlation coefficient** (or **Spearman's $\rho$**), is a non-parametric measure of rank correlation. It assesses how well the relationship between two variables can be described using a monotonic function. 
+
+The Spearman correlation between two variables is equal to the Pearson correlation between the rank values of those two variables; while Pearson's correlation assesses linear relationships, Spearman's correlation assesses monotonic relationships (whether linear or not).
+
+Spearman's coefficient is appropriate for both continuous and discrete ordinal variables.
+
+### Formula
+
+For a sample of size $n$, the $n$ raw scores $X_i, Y_i$ are converted to ranks $\text{rg}X, \text{rg}Y$ and $r_s$ is computed from:
+
+$$
+r_s = \rho_{\text{rg}X, \text{rg}Y} = \frac{\text{cov}(\text{rg}X, \text{rg}Y)}{\rho_{\text{rg}X} \rho_{\text{rg}Y}}
+$$
+
+where
+
++ $\rho$ denotes the usual Pearson correlation coefficient, but applied to the rank variables
++ $\text{cov}(\text{rg}X, \text{rg}Y)$ is the covariance of the rank variables
++ $\rho_{\text{rg}X}$ and $\rho_{\text{rg}Y}$ are the standard deviations of the rank variables
+
+###   
+
+# Computing correlation coefficients in `R`
+
+Correlation coefficients can be computed in `R` using the functions `cor()` or `cor.test()`.
+
++ `cor()` computes the **correlation coefficient**
++ `cor.test()` returns a more complete analysis of the correlation between a paired set of samples. It returns both the **correlation coefficient** and the **significant level** (or p-value) of the correlation.
+
+The format of the function is as follow:
+
+## Function `cor()`
+
+```{r, eval = FALSE}
+cor(x,y, na.rm, use, method = c('pearson', 'kendall', 'spearman'))
+```
+
+with
+
++ `x`,`y`: numeric, vector, matrix or data frame with the same length
++ `na.rm`: logical, should missing value be removed?
++ `use`: method in the presence of missing values, must be one of `"everything"`, `"all.obs"`, `"complete.obs"`, `"na.or.complete"`, or "pairwise.complete.obs"
++ `method`: which correlation to be computed, must be one of `"pearson"` (default), `"kendall"`, or `"spearman"`
+
+## Function `cor.test()`
+
+```{r, eval = FALSE}
+cor.test(x, y, 
+         alternative = c("two.sided", "less", "greater"),
+         method = c("pearson", "kendall", "spearman"),
+         exact, conf.level, continuity)
+```
+
+with
+
++ `x`,`y`: numeric, vector, matrix or data frame with the same length
++ `alternative`: alternative hypothesis, must be one of `"two.sided"`, `"less"`, or `"greater"`. `"greater"` and `"less"` corresponds to positive and negative correlation, respectively 
++ `method`: which correlation to be computed, must be one of `"pearson"` (default), `"kendall"`, or `"spearman"`
++ `exact`: logical, whether an exact p-value should be computed, used for Kendall's $\tau$ and Spearman's $\rho$
++ `conf. level`: confidence level for the confidence interval
++ `continuity`: logical; when `True`, a continuity correction is used for Kendall's $\tau$ and Spearman's $\rho$ 1when not computed exactly.
+ 
+# Example
+
+As an example of calculating correlation coefficients, we will use a built-in dataset of `R`, which is `mtcars`. The data was extracted from the 1964 Motor Trend US magazine, and comprises fuel consumption and 10 aspects of automobile design and performance for 32 automobiles (1973-74 models)
+
+We load and view the head of this dataset as follow
+
+```{r}
+data("mtcars")
+head(mtcars)
+```
+
+In this example, we will consider the correlation between two variables, `mpg` and `wt`. These are all continuous variables, which will be a perfect example for a correlation between two numerical variables.
+
+**Note:** Throughout this example, we will use the library `ggplot2` for all the visualization work. This ensures the coherence of all the tutorials produced.
+
+First of all, we will investigate the correlation between these two variables by a scatterplot.
+
+```{r}
+library(ggplot2)
+ggplot(mtcars, aes(x = mpg, y = wt)) + 
+  geom_point() + 
+  geom_smooth(method = lm) + 
+  labs(x = "Miles/(US) gallon", y = "Weight (1000 lbs)")
+```
+
+From the scatterplot, we can see that the relationship between these two variables are linear. Next, we will inspect the distribution of each column, first by visualizing it using the **Q-Q plot** (quantile - quantile plot).
+
+```{r}
+## Q-Q plot for mpg
+ggplot(mtcars, aes(sample = mpg)) +
+  stat_qq() +
+  stat_qq_line() + 
+  labs(y = "MPG")
+
+## Q-Q plot for mp
+ggplot(mtcars, aes(sample = wt)) +
+  stat_qq() +
+  stat_qq_line() +
+  labs(y = "WT")
+```
+
+Here, we want to know whether these two variables follow a normal distribution. After inspecting the Q-Q plot, we can perform some statistics test as follow (which will be mentioned deeper in another publication):
+
++ **Sharpiro-Wilk test**: This test is a test of normality in frequentist statistics, published in 1965 by Samuel Sanford Shapiro and Martin Wilk. This test is performed in `R` as follow:
+
+```{r}
+shapiro.test(mtcars$mpg)
+shapiro.test(mtcars$wt)
+```
+
++ **Jarque - Bera test**: This is a goodness-of-fit test of whether sample data have the skewness and kurtosis matching a normal distribution, which is named after Carlos Jarque and Anni K. Bera. The test is performed as follow:
+
+```{r}
+library(tseries)
+jarque.bera.test(mtcars$mpg)
+jarque.bera.test(mtcars$wt)
+```
+
+Since all the p-values of the tests are above $\alpha = 0.05$, we do not reject the null hypothesis of normality for both of these variables.
+
+Next, we will apply the correlation tests
+
++ Pearson correlation test
+
+```{r}
+cor.test(mtcars$wt, mtcars$mpg, method = "pearson", conf.level = 0.95)
+```
+
+Here, we can see that the p-value of the statistics test is $1.294 \times 10^{-10}$, which is less than the significance level of $\alpha = 0.05$. This means that the correlation between two variables `wt` and `mpg` is significance, and the correlation coefficient is approximately $-0.87$.
+
+We also kindly note that the `conf.level` can only now be used for the **Pearson product moment correlation** when there are at least f4 complete pairs of observations. As a result, similarly, for the other correlation tests, we would also have:
+
++ Kendall correlation test
+
+```{r}
+cor.test(mtcars$wt, mtcars$mpg, method = "kendall")
+```
+
++ Spearman correlation test
+
+```{r}
+cor.test(mtcars$wt, mtcars$mpg, method = "kendall")
+```
+
+# Correlation matrix and correlation heatmap
+
+**Correlation matrix** is a table showing the correlation between sets of variables. The correlation matrix can be easily computed, using again the `cor` function. In this example, for the sake of simplicity and aesthetics, we will only consider the correlation between the first 7 variables (7 first columns) of the dataset `mtcars`.
+
+```{r}
+mtcars_new <- mtcars[,c(1:7)]
+corrmat_pearson <- cor(mtcars_new, method = "pearson")
+corrmat_pearson
+```
+
+In order to create the correlation hearmap, first, we will have to **melt** the correlation matrix by using the `melt` function from the package `reshape`
+
+```{r}
+library(reshape)
+melted_corrmat_pearson <- melt(corrmat_pearson)
+head(melted_corrmat_pearson)
+```
+
+To visualize the correlation matrix, we can simply use the function `geom_tile()` in the package `ggplot2` as follow:
+
+```{r}
+ggplot(melted_corrmat_pearson, aes(x = X1, y = X2, fill = value)) + 
+  geom_tile() + 
+  labs(x = 'Variables', y = 'Variables') + 
+  coord_fixed()
+```
+
+However, we can see that, this correlation matrix is not perfect. We can change the appearance of this hearmap by adding correlation coefficients and change the color gradient. Although this is a little bit complicated, it is totally achievable. After such modification, we will notice that our correlation hearmap is much clearer and more nice-looking.
+
+To do it, first, we will have to round the correlation matrix to 2 significant figures (to add the values into the correlation heatmap).
+
+```{r}
+corrmat_pearson_rounded <- round(corrmat_pearson, 2)
+melted_corrmat_pearson_rounded <- melt(corrmat_pearson_rounded)
+
+ggplot(melted_corrmat_pearson_rounded, aes(x = X1, y = X2, fill = value)) + 
+  labs(title = "Correlation heatmap for first 7 variables of the dataset mrcars") + 
+  geom_tile(color = "white") + 
+  scale_fill_gradient2(low = "blue", mid = "white", high = "red", midpoint = 0, limit = c(-1,1), 
+                      space = "Lab", name = "Correlation coefficient") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, size = 12, hjust = 1, vjust = 1), 
+        axis.text.y = element_text(size = 12, hjust = 1, vjust = 0.5),
+        axis.title.x = element_blank(), axis.title.y = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank(),
+        axis.ticks = element_blank()) + 
+  geom_text(aes(x = X1, y = X2, label = value), color = "black", size = 4) + 
+  coord_fixed()
+```
+
+In this tutorial, we have discussed the most common correlation parameters between continuous/numerical variables. Next time, we will cover correlation coefficients for discrete/categorical variables.
+
+# References
