@@ -216,6 +216,19 @@ summary {
 </ul>
 </div>
 
+<p>First, before proceeding with this tutorial, we will have to install the following required packages:</p>
+<ul>
+<li>Package <code>tseries</code></li>
+<li>Package <code>reshape</code></li>
+<li>Package <code>ggplot2</code></li>
+</ul>
+<p>The following chunk will check each package’s availability and install them if necessary</p>
+<pre class="r"><code>required_packages &lt;- c('tseries', 'reshape', 'ggplot2')
+for (p in required_packages) {
+  if(!require(p,character.only = TRUE)) {
+    install.packages(p, dep = TRUE)
+  }
+}</code></pre>
 <div id="what-is-a-correlation-coefficient" class="section level1">
 <h1><span class="header-section-number">1</span> What is a correlation coefficient?</h1>
 <p>A correlation coefficient is a numerical measure of some type of correlation, meaning a statistical relationship between two variables. The variables may be two columns of a given data set of observations, often called a sample, or two components of a multivariate random variable with a known distribution.</p>

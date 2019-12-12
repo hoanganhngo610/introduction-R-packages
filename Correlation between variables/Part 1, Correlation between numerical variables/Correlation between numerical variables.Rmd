@@ -12,6 +12,23 @@ output:
 nocite: '@*'
 ---
 
+First, before proceeding with this tutorial, we will have to install the following required packages:
+
++ Package `tseries`
++ Package `reshape`
++ Package `ggplot2`
+
+The following chunk will check each package's availability and install them if necessary
+
+```{r, eval = FALSE}
+required_packages <- c('tseries', 'reshape', 'ggplot2')
+for (p in required_packages) {
+  if(!require(p,character.only = TRUE)) {
+    install.packages(p, dep = TRUE)
+  }
+}
+```
+
 # What is a correlation coefficient?
 
 A correlation coefficient is a numerical measure of some type of correlation, meaning a statistical relationship between two variables. The variables may be two columns of a given data set of observations, often called a sample, or two components of a multivariate random variable with a known distribution.
