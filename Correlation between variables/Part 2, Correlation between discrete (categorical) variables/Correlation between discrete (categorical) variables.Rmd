@@ -1,0 +1,294 @@
+---
+title: 'Correlation between discrete (categorical) variables'
+author: Hoang Anh NGO (École Polytechnique)
+date: "11 December 2019"
+bibliography: references_correlation_categorical.bib
+output: 
+  html_document:
+    number_sections: yes
+    theme: sandstone
+    toc: yes
+    toc_depth: 4
+nocite: '@*'
+---
+
+First, before proceeding with this tutorial, we will have to install the following required packages:
+
++ Package `MASS`
++ Package `rcompanion`
++ Package `lsr`
++ Package `vcd`
++ Package `DescTools`
+
+The following chunk will check each package's availability and install them if necessary
+
+```{r, eval = FALSE}
+required_packages <- c('MASS', 'rcompanion', 'lsr', 'vcd', 'DescTools')
+for (p in required_packages) {
+  if(!require(p,character.only = TRUE)) {
+    install.packages(p, dep = TRUE)
+  }
+}
+```
+
+
+From the previous tutorial, we have seen previous parameters to measure the correlation between two continuous, or numerical, variables. However, all those of them are not defined when the data is categorical. As a result, something else is needed here. 
+
+Here, we will introduce different measures of association between two categorical variables. First, we will introduced the Pearson's chi-squared test, along with the variations, Cramer's V and Contingency Coefficient C.
+
+# Contingency table 
+
+## Definition: 
+
+Contingency tables (also called crosstabs or two-ways tables) are used in statistics to summarize the relationship between categorical variables. A contingency table is a special type of frequency distribution table, where two variables are shown simultaneously.
+
+## How to create a contingency table in `R`:
+
+First, for this tutorial, we will use the built-in dataset `Cars93` from the package `MASS`. This dataset contains information about 93 cars on sale in the US in 1993, including 27 features (some of which are categorical).
+
+```{r}
+library('MASS')
+head(Cars93)
+```
+
+To see how many types of car and how many cars in each type, we use the `table` function. To convert into fractions, we can use the function `prop.table`.
+
+```{r}
+table(Cars93$Type)
+prop.table(table(Cars93$Type))
+```
+
+Here, as an example for a contingency table, we will look at the types of cars with respect to their origin. To do this, we can use the function `table` again, but with two arguments now. 
+
+```{r}
+table(Cars93$Type, Cars93$Origin)
+```
+
+# Pearson $\chi^2$ test
+
+## Definition
+
+**Pearson's chi-squared test** ($\chi^2$) is a statistical test applied to sets of categorical data to evaluate how likely it is that any observed difference between the sets arose by chance. It is the most widely used of many chi-squared tests.
+
+It tests a null hypothesis stating that the frequency distribution of certain events observed in a sample is consistent with a particular theoretical 
+
+## Computational procedure
+
+Pearson's chi-squared test is used to assess three types of comparison: goodness of fit, homogeneity, and independence. For all three tests, the computational procedure includes the following steps:
+
+1. Calculate the chi-squared test statistic, $\chi^2$.
+2. Determine the degree of freedom (df) of that statistic.
+3. Select a desired level of confidence for the result of the test.
+4. Compare $\chi^2$ to the critical value from the chi-squared distribution with **df** degrees of freedom and the selected confidence level.
+5. Sustain or reject the null hypothesis. 
+    * If the test statistic exceeds the critical value of $\chi^2$, the null hypothesis can be rejected, and the alternative hypothesis can be accepted. 
+    * If the test statistic falls below the critical value of $\chi^2$, no clear conclusion can be reached. The null hypothesis is sustained, but not necessarily accepted.
+
+## Calculating the test-statistic
+
+The value of the test-statistic is 
+
+$$
+\chi^2 = \sum_{i = 0}^n \frac{(O_i - E_i)^2}{E_i} = N \sum_{i = 1}^n \frac{(O_i/N - p_i)^2}{p_i}
+$$
+
+where
+
++ $\chi^2$:  Pearson's cumulative test statistic
++ $O_i$: the number of observations of type $i$
++ $N$: total number of observations
++ $E_i = Np_i$: the expected count of type $i$
++ $n$: the number of cells in the table
+
+
+## Chi-squared test in `R`
+
+We can perform the chi-squared test in `R` using the function `chisq.test()`.
+
+```{r}
+chisq.test(Cars93$Type, Cars93$Origin)
+```
+
+
+Here, we have a $\chi^2$ value of $14.08$. Since we get a p-value of less than the significance level of $0.05$, we can reject the null hypothesis and conclude that the two variables are, indeed, independent. 
+
+A problem with Pearson’s $\chi^2$ coefficient is that the range of its maximum value depends on the sample size and the size of the contingency table. These values may vary in different situations. To overcome this problem, the coefficient can be standardized to lie between 0 and 1 so that it is independent of the sample size as well as the dimension of the contingency table. Several coefficients have been defined for this purpose, and we will consider some of them in the following section.
+
+# Coefficients using chi-squared statistic
+
+## Contingency coefficient $C$
+
+### Definition
+
+Originally, the Pearson's contingency coefficient is calculated as:
+
+$$
+C = \sqrt{\frac{\chi^2}{\chi^2 + n}}
+$$  
+
+with $n$ being the total number of observations. However, there is another option to correct this contingency coefficient as:
+
+$$
+C_{corr} = \frac{C}{C_{max}} = \sqrt{\frac{\min(k,l)}{\min(k,l) - 1}} \sqrt{\frac{\chi^2}{\chi^2 + n}}
+$$
+
+with 
+
+$$
+C = \sqrt{\frac{\chi^2}{\chi^2 + n}} \text{ and } C_{max} = \sqrt{\frac{\min(k,l) - 1}{\min(k,l)}}
+$$
+
+### Calculating (corrected) contintency coefficient in `R`
+
+To calculate (corrected), contingency coefficient, we can use the function `ContCoef()` from the package `DescTools`. This function allows us to calculate both the original and corrected contigency table by changing the parameter `correct` to `True` or `False`.
+
+```{r}
+library('DescTools')
+ContCoef(Cars93$Type, Cars93$Origin, correct = FALSE)
+ContCoef(Cars93$Type, Cars93$Origin, correct = TRUE)
+```
+
+## Cramer's V
+
+### Definition
+
+For a $k \times l$ contingency table, $n(\min(k,l) - 1)$ is the maximal value of the $\chi^2$ statistic, dividing $\chi^2$ by the maximal value leads to a scaled version with maximal value $1$. This idea is used by Cramer's $V$ as follow:
+
+$$
+V = \sqrt{\frac{\chi^2}{n(\min(k,l) - 1)}}
+$$
+
+### Calculating Cramer's V in `R`
+
+To calculate Cramer's V in `R`, we can use the function `cramerV()` from the package `rcompanion`. In contrast to the function `cramersV()` from the `lsr` package, `cramerV()` offers an option to correct for bias.
+
+Besides, we can also use the functions `assocstats` and `xtabs` contained in the package `vcd`. For example:
+
+```{r}
+library('rcompanion')
+cramerV(Cars93$Type, Cars93$Origin, bias.correct = FALSE)
+```
+
+and 
+
+```{r}
+library('lsr')
+cramersV(Cars93$Type, Cars93$Origin)
+```
+
+and 
+
+```{r}
+library('vcd')
+assocstats(xtabs(~Cars93$Type + Cars93$Origin))
+```
+
+yields the same result for Cramer's V, which is approximately 0.389, while the corrected version of Cramer's V in the package `rcompanion`, which is
+
+```{r}
+cramerV(Cars93$Type, Cars93$Origin, bias.correct = TRUE)
+```
+
+There are several other coefficients that are also defined for the purpose of measuring the strength of association between two discrete (categorical) variables, including some that also use the chi-squared statistic. Here are some of the examples:
+
++ Goodman Kruskal's lambda
++ Phi coefficient (mean square contingency coefficient)
++ Tschuprow's 
+
+Note that the Phi coefficient are only defined for $2 \times 2$ contingency table.
+
+# The problem of symmetry
+
+With Cramer's V, we are losing valuable information due to its symmetry. For example, consider the following simple dataset:
+
+| x 	| y 	|
+|:-:	|:-:	|
+| A 	| m 	|
+| A 	| n 	|
+| A 	| m 	|
+| B 	| p 	|
+| B 	| p 	|
+| B 	| q 	|
+
+We can see that if the value of $y$ is known, the value of $x$ is guaranteed; but even when the value of $x$ is known, we can not determine the value of $y$. This asymmetry is lost when we use Cramer's V. As a result, we need another coefficient that can preserve this information between any pairs of variables, and this is exactly what Thiel's U offers.
+
+# Thiel's U correlation coefficient (Uncertainty Coefficient)
+
+## Definition
+
+The **uncertainty coefficient** (also called **entropy coefficient** or **Thiel's U**) is a measure of nominal association. It is based on the concept of information entropy.
+
+Suppose we have samples of two discrete random variables, $X$ and $Y$. By constructing the point distribution $p_{X,Y}(x,y)$, from which we can calculate the conditional distributions, $p_{X|Y}(x|y) = \frac{p_{X,Y}(x,y)}{p_Y(Y)}$ and $p_{Y|X} = \frac{p_{X,Y}(x,y)}{p_X(x)}$, and calculating various entropies, we can determine the degree of association between the two variables..
+
+The entropy of a single distribution is given as:
+
+$$
+H(X) = -\sum_{x} p_X(x)\log p_X(x)
+$$
+while the conditional entropy is given as:
+
+$$
+H(X|Y) = -\sum_{x,y} p_{X,Y}(x,y) \log p_{X,Y}(x|y)
+$$
+
+The uncertainty coefficient or proficiency is defined as:
+
+$$
+U(X|Y) = \frac{H(X) - H(X|Y)}{H(X)} = \frac{I(X;Y)}{H(X)}
+$$
+which tells us: given $Y$, what fraction of the bits of $X$ can we predict.
+
+As mentioned previously, uncertainty coefficient is not symmetric with respect to the roles of X and Y. The roles can be reversed and a symmetrical measure thus defined as a weighted average between the two:
+
+$$
+U(X,Y) = \frac{H(X)U(X|Y) + H(Y)U(Y|X)}{H(X) + H(Y)} = 2 \left[ \frac{H(X) + H(Y) - H(X,Y)}{H(X) + H(Y)} \right] 
+$$
+
+## Calculating Uncertainty coefficient in `R`
+
+To calculate the uncertainty coefficent in `R`, we will use the function `UncertCoef` from the package `DescTools`. 
+
+This function measures the uncertainty coefficient in the column variable Y that is explained by the row variable X. The function has interfaces for a table, a matrix, a data.frame and for single vectors. 
+
+### Usage and arguments
+
+```{r, eval = FALSE}
+UncerCoef(x, y, direction = c("symmetric","row","column"), conf.level = NA, p.zero.correction = 1/sum(x)^2,...)
+```
+
+with 
+
++ `x`: a numeric vector, a factor, matrix or data frame
++ `y`: `NULL` (default) or a vector, an ordered vector, matrix or data frame with compatible dimensions to `x`
++ `direction`: direction of the calculation. Can be `row` (default) or `column`, where `row` calculates `UncertCoef(R|C)` ("column dependent")
++ `conf.level`: confidence level of the interval. If set to `NA` (which is the default), no confidence interval will be calculated
++ `p.zero.correction`: slightly nudge zero values so that the logarithm can be calculated
+
+### Examples
+
+Coming back to the previous example, we will calculate the correlation between `Type` and `Origin` in dataset `Cars93`. First, we will calculate $U(Type|Origin)$. Noting that the function `UnderCoef` is compatible with different forms (vector, matrix, datasets), we can write the function as follow:
+
+```{r}
+UncertCoef(table(Cars93$Type, Cars93$Origin), direction = "column")
+UncertCoef(Cars93$Type, Cars93$Origin, direction = "column")
+```
+
+which yield the same result. In the first call of the function, we use the function `table` to create a contingency table of the two variables, and then use the direction `"column"` to indicate calculating the uncertainty coefficient of `Type` given `Origin`. Similarly, to calculate $U(Origin|Type)$, we can do as follows:
+
+```{r}
+UncertCoef(table(Cars93$Type, Cars93$Origin), direction = "row")
+UncertCoef(Cars93$Type, Cars93$Origin, direction = "row")
+```
+
+Finally, to calculate the symmetric measure of the uncertainty coefficient, we can write
+
+```{r}
+UncertCoef(table(Cars93$Type, Cars93$Origin), direction = "symmetric")
+UncertCoef(Cars93$Type, Cars93$Origin, direction = "symmetric")
+```
+
+This new coefficient can provide us with much more information on the relations between different features.
+
+Within the two tutorials, we have seen measures of correlation between two continuous (numerical) variables or between two discrete (categorical) variables. In the next tutorial, we will mix things up, i.e to consider the correlation between a continuous feature and a categorical feature. 
+
+# References
