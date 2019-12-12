@@ -21,6 +21,14 @@ There will be one folder dedicated for each notebook/tutorial. Each of these fil
 + One `RMarkdown` file
 + One `HTML` file knitted from the markdown file
 + One `.bib` file indicating references for the respective markdown file
+
+# Technical requirements
+
+All of the tutorials/source code here are written by `RMarkdown`, which is a part of `RStudio`. As a result, in order to display the file or replicate the work/code done in the tutorials, the installation of `RStudio` is required. `Rstudio Desktop` (with Open Source License) can be downloaded at: https://rstudio.com/products/rstudio/download/.
+
+Moreover, as there are different packages installed, and each of them would be compatible from a certain version of `RStudio`, it is also recommended to install the latest version of the software. Currently, the latest version is `1.2.5019`, published on November 1st, 2019.
+
+At the beginning of each tutorial, there will be a script that checks whether the required packages for that particular tutorial, and then install the missing packages. For the sake of the publication of tutorials, in the source code, that chunk is labeled as `eval = FALSE`, which means that while rendering the file into `HTML`, that chunk will not be executed. If you want to replicate or apply the tutorials to similar situations,you are encouraged to run that chunk, simply by deleting `eval = FALSE`, or change to `eval = TRUE`.  
   
 # Publication
  
@@ -33,6 +41,8 @@ All of the tutorials within this repository will be upload on `RPubs`, a website
 + Correlation between variables
 
   + **Correlation between numerical variables** : https://rpubs.com/hoanganhngo610/556786
+
+  + **Correlation between discrete (categorical) variables**: https://rpubs.com/hoanganhngo610/558925
 
 
 # Acknowledgement
