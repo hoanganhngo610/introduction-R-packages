@@ -1,0 +1,380 @@
+---
+title: 'Introduction to `tidyverse` (Part 2): Data manipulation with `dplyr`'
+author: Hoang Anh NGO (École Polytechnique)
+date: "16 December 2019"
+bibliography: references_dplyr.bib
+output: 
+  html_document:
+    number_sections: yes
+    theme: sandstone
+    toc: yes
+    toc_depth: 4
+nocite: '@*'
+---
+
+
+First, before proceeding with this tutorial, we will have to install the following required packages:
+
++ Package `hflights`
++ Package `tidyverse` (This suite of packages include the package that we are considering within this tutorial, `dplyr`)
+
+The following chunk will check each package's availability and install them if necessary
+
+```{r, eval = FALSE}
+required_packages <- c('hflights', 'dplyr')
+for (p in required_packages) {
+  if(!require(p,character.only = TRUE)) {
+    install.packages(p, dep = TRUE)
+  }
+}
+```
+
+# Introduction
+
+`dplyr` is a grammar of data manipulation, providing a consistent set of verbs that help you solve the most common data manipulation challenges, developed by Hadley Wickham and Romain Francais. `dplyr` is the next iterations of `plyr`, focusing on only dataframes; thus, it is faster, has a more consistent API and should be easier to use.
+
+To load or install the package, the easiest way is to load or install the whole suite of packages `tidyverse`. Alternatively, one can also independently load or install `dplyr`:
+
+```{r}
+library('tidyverse')
+```
+
+or
+
+```{r}
+library('dplyr')
+```
+
+
+# Overview
+
+`dplyr` provides a consistent set of verbs that help one solve the most common data manipulation challenges, for example 
+
++ `mutate()` and `trasmute` add new varibales as functions of existing varibales
++ `filter()` selects cases based on their values
++ `arrange()` changes the ordering of the rows 
++ `summarise()` reduces multiple values down to a single summary
++ `select()` and `rename()` chooses variables based on their names
++ `sample_n()` and `sample_frac()` takes random variables
+# Dataset 
+
+To explore the basic data manipulation functions within `dplyr`, we proceed with a built in `hflights` dataframe from the package with the same name. 
+
+First of all, we will load the package containing the dataset:
+
+```{r}
+library('hflights')
+```
+
+This dataset contains 227494 flights that departed from Houston in the year 2011, collected by the US Bureau of Transportation Statistics. The documentations of this dataset can be found using the command `?hlights` as follow:
+
+```{r}
+?hflights
+```
+
+Now, we will find out the dimensions of this dataset, its class, along with displaying the first few rows in order to get an overview of how this dataset looks like
+
+```{r}
+dim(hflights)
+class(hflights)
+head(hflights)
+```
+
+As above, we can see that this dataset is implemented into `R` under the class `data.frame`, which is exactly what `dplyr` is designed to work with. However, as this can be considered to be a large dataset, it would be easier and worthwhile to change it to a tibble with the function `tbl_df`.
+
+Here, we will discuss what is a tibble, and see why is it worth it to change a large dataset from class `data.frame` to `tibble` while working with `dplyr`.
+
+A tibble, or `tbl_df`,  is a modern reimagining of the data.frame, keeping what time has proven to be effective, and throwing out what is not. Tibbles do much less and complain much more than data frames, which means that one has to confront problems earlier, typically leading to cleaner, more expressive and productive code. To read more about the features, please refer to the fignette
+
+```{r, eval = FALSE}
+vignette('tibble')
+```
+
+Here, we proceed to change the data frame `hflights` to `tibble`.
+
+```{r}
+hflights <- tbl_df(hflights)
+head(hflights)
+class(hflights)
+```
+
+
+## Filter rows with `filter()`
+
+The verb `filter()` allows one to selecta subset of the rows of a data frame. The first argument would be the name of the data frame, while the subsequent (following) arguments would refer to the variables within that data frame, selecting rows where the condition holds `TRUE`.
+
+For example, to filter the flights departing from Houston on the final day of the year 2011 (i.e December 31st), we can select:
+
+```{r}
+filter(hflights, Month == 12, DayofMonth == 31)
+```
+
+The above function is roughly equivalent to the following base `R` function:
+
+```{r}
+hflights[hflights$Month == 12 & hflights$DayofMonth == 31,]
+```
+
+## Arrange rows with `arrange()`
+
+Instead of filetring or selecting rows from the given conditions, the function `arrange()` reorders them. This functions takes a data frame as an argument, and a set of column names following to order. If there are more than one column name given, the additional columns will be used to break ties in the value of the preceding columns:
+
+```{r}
+arrange(hflights, Year, Month, DayofMonth)
+```
+
+The default order of `arrange()` is ascending; however, one can arrange the columns in descending order with `desc()`:
+
+```{r}
+arrange(hflights, desc(ArrDelay))
+```
+
+The verb `arrange()` works the exact same way as another built-in function of `R` (`order()`), but with much less typing. What we have already done with `arrange()` can also be written with `order()` as:
+
+```{r}
+hflights[order(hflights$DayofMonth, hflights$Month, hflights$Year),]
+hflights[order(desc(hflights$ArrTime)),]
+```
+
+or 
+
+```{r}
+hflights[order(-hflights$ArrTime),]
+```
+
+## Select columns with `select()`
+
+There are often times when one works with a dataset that there are only a few of the columns are of his/her interest. With that being said, `dplyr` allows the selection of a subset by column that usually only work for numerica variable positions:
+
+```{r}
+#select columns by names 
+select(hflights, Year, Month, DayofMonth)
+#select columns between two columns' names (inclusive)
+select(hflights, Year:DayofMonth)
+#select all columns apart from the columns between two columns' names 
+select(hflights, -(Year:DayofMonth))
+```
+
+There are a number of helper functions one can use within select, for example:
+
++ `starts_with()`: starts with a prefix
++ `ends_with()`: ends with a prefix
++ `contains()`: contains a literla string
++ `mathces()`: matches a regular expression 
++ `num_range()`: matches a numerical range like x01, x02, x03
++ `one_of()`: matches variable names in a character vector
+
+These helper functions will match larger blocks of varibales that meet certain criteria. For more information, please refer to `?select()`. 
+
+While using `select()`, one can also rename variables by using named arguments:
+
+```{r}
+select(hflights, Tail_Num = TailNum)
+```
+
+Moreover, in order to rename a variable without having to choose it using `select()` and remove all the other variables, one can simply use `rename()` instead:
+
+```{r}
+rename(hflights, Tail_Num = TailNum)
+```
+
+## Add new columns with `mutate()`
+
+Besides selecting a sub set from the set of existing columns, there are often times when we have to add new columns as a function of existing columns. This is the place where `mutate()` comes to work.
+
+```{r}
+mutate(hflights, 
+       Diff = ArrDelay - DepDelay,
+       AvgSpeed = Distance / AirTime * 60)
+```
+
+`dplyr::mutate()` is pretty similar to the function `transform()` from the package `base`; however, the difference here is that `mutate()` allows you to refer to the new columns that you have just created:
+
+```{r}
+mutate(hflights,
+       Diff = ArrDelay - DepDelay,
+       DiffPerHour = Diff / (AirTime / 60))
+```
+
+If we only want to keeps the new variables that have just been created, it can simply be done by using `transmute()`:
+
+```{r}
+transmute(hflights,
+          Diff = ArrDelay - DepDelay,
+          DiffPerHour = Diff / (AirTime / 60))
+```
+
+## Randomly sample rows with `sample_n()` and `sample_frac()`
+
+We can take a random sample of rows from the dataset, using `sample_n()` and `sample_frac()`:
+
++ `sample_n()` for a fixed **number** of rows
++ `sample_frac()` for a fixed **fraction** of rows
+
+```{r}
+sample_n(hflights, 10)
+sample_frac(hflights, 0.001)
+```
+
+## Summarize variables with `summarise()`
+
+The last verb in the package `dplyr` is `summarise()`, where it collapses a data frame into a single row, containing values based on the function that we indicate within the argument.
+
+```{r}
+summarise(hflights,
+          MeanDepDelay = mean(DepDelay, na.rm = TRUE))
+```
+
+```{r}
+summarise(hflights,
+          MaxArrDelay = max(ArrDelay, na.rm = TRUE))
+```
+
+
+#Grouped operations 
+
+Most of the time, the verbs (or functions) in `dplyr` can be used on their own. However, whenever we need to apply those functions to groups of observations within a dataset, there is rhe `group_by()` function. This allows a dataset to be broken down into specific groups of rows. Whenever one applies the verbs within this package on the resulting dataset, it will automatically applied by groups. 
+
+```{r}
+by_tailnum <- group_by(hflights, TailNum)
+delay <- summarise(by_tailnum,
+  count = n(),
+  dist = mean(Distance, na.rm = TRUE),
+  delay = mean(ArrDelay, na.rm = TRUE))
+delay
+```
+
+```{r}
+by_tailnum
+```
+
+# Piping
+
+Before the existence of pipes, there are two usual ways to apply different functions one after another: using intermediate steps, or writing nested function. 
+
+* For intermediate steps, we usually create temporary data frames and use them as input for the upcoming functions. However, this can fill up the workspace and memory with lots of objects/datasets.
+* For nested function, it can be handy; however, it can also be difficult to read if two many functions are nested, as we have to read from inside out.
+
+As a recent addition to `R`, pipes allow us to take the output of one function and send it directly to the next. Moreover, when a data frame is being passed through functions through a pipe, we do not need to include it as an argument to these functions anymore.
+
+```{r}
+hflights %>%
+  group_by(Year, Month, DayofMonth) %>%
+  filter(UniqueCarrier == "AA") %>%
+  select(ArrDelay, DepDelay) %>%
+  summarise(
+    arr = mean(ArrDelay, na.rm = TRUE),
+    dep = mean(DepDelay, na.rm = TRUE)
+  ) %>%
+  filter(arr > 30 | dep > 30)
+```
+
+
+# Joining datasets
+
+Often, when working with disparate datasets, we might want to join the data together on (a) common column(s). Moreover, there are often times that we are not able to upload the datasets to a database in order to join using SQL. This is when `dplyr` comes in.
+
+The general syntax of these joins is as follow:
+
+```{r, eval = FALSE}
+join_type(x, y, by = column_to_join)
+```
+
+
+Currently, `dplyr` supports four types of mutating joins, two types of filtering joins, and a nesting joins.
+
+To see how each of the join types works, we will take a look at a small example below, with two dataframes: one containing purchasing habits of customers and another containing demographic information about such customers. These dataframes can be seen from a loyalty scheme, and is taken as a reference (with modifications) from the article "Joining data with `dplyr` in `R`" by Holly Emblem. 
+
+```{r}
+purchasing_habits <- data.frame("Customer ID"= c(1:3,5), 
+                                "Number of orders"= c(5, 10, 4, 2),
+                                "Total value of orders" = c(500, 240, 40, 100), 
+                                "Average value of orders" = c(100,24,10,50), 
+                                "Last order date" = as.Date(c("12/07/2018", "01/02/2018", "03/06/2017", "24/12/2017"), "%d/%m/%y"))
+
+purchasing_habits
+
+customer_information <- data.frame("Customer ID" = c(1,2,4),
+                                   "Age" = c(50,44,30),
+                                   "Gender" = c('M','F','F'),
+                                   "Favorite product" = c('T-shirts','Leggings','Jumpers'))
+
+customer_information
+```
+
+First, **mutating joins** combine variables from the two data frames:
+
+* `inner_join()` returns all rows from `x` where there are matching values in `y`, and all columns from `x` and `y`. If there are multiple matches between `x` and `y`, all combination of the matches are returned.
+
+```{r}
+inner_join(purchasing_habits, customer_information, by = "Customer.ID")
+```
+
+
+* `left_join()` returns all rows from `x`, and all columns from `x` and `y`. Rows in `x` with no match in `y` will have `NA` values in the new columns. If there are multiple matches between `x` and `y`, all combinations of the matches are returned. 
+```{r}
+left_join(purchasing_habits, customer_information, by = "Customer.ID")
+```
+
+
+* `right_join()` returns all rows from `y`, and all columns from `x` and `y`. Rows in `y` with no match in `x` will have NA values in the new columns. If there are multiple matches between `x` and `y`, all combinations of the matches are returned
+
+```{r}
+right_join(purchasing_habits, customer_information, by = "Customer.ID")
+```
+
+* `full_join()` return all rows and all columns from both `x` and `y`. Where there are not matching values, returns `NA` for the one missing.
+
+```{r}
+full_join(purchasing_habits, customer_information, by = "Customer.ID")
+```
+
+**Filtering joins** keep cases from the left-hand data frame:
+
+* `semi_join()` return all rows from `x` where there are matching values in `y`, keeping just columns from `x`. A semi join differs from an inner join because an inner join will return one row of `x` for each matching row of `y`, where a semi join will never duplicate rows of `x`.
+
+```{r}
+semi_join(purchasing_habits, customer_information, by = "Customer.ID")
+```
+
+* `anti_join()` return all rows from `x` where there are not matching values in `y`, keeping just columns from `x`.
+
+```{r}
+anti_join(purchasing_habits, customer_information, by = "Customer.ID")
+```
+
+Finally, **nesting joins** create a list column of data.frames
+
+* `nest_join()` return all rows and all columns from `x`. Adds a list column of tibbles. Each tibble contains all the rows from `y` that match that row of `x`. When there is no match, the list column is a 0-row tibble with the same column names and types as `y`. `nest_join()` is the most fundamental join since you can recreate the other joins from it. 
+
+  * An `inner_join()` is a `nest_join()` plus an `tidyr::unnest()`
+  * An `left_join()` is a `nest_join()` plus an `unnest(.drop = FALSE)`
+  * An `semi_join()` is a `nest_join()` plus a `filter()` where you check that every element of data has at least one row
+  * An `anti_join()` is a `nest_join()` plus a `filter()` where you check every element has zero rows.
+  
+# Drawbacks upon using `dplyr`
+
+There are two main drawbacks considering the usage of `dplyr`:
+
+* First of all, most `dplyr` arguments are not referentially transparent. In other words, you can not replace a value with an equivalent subject that has been pre-defined elsewhere. For example, the code
+
+```{r}
+filter(customer_information, Customer.ID == 1)
+```
+
+is neither equivalent to
+
+```{r, eval = FALSE}
+x <- Customer.ID
+filter(customer_information. x == 1)
+```
+
+nor to 
+```{r}
+x <- "Customer.ID"
+filter(customer_information, x == 1)
+```
+
+* `dplyr` code is ambiguous, which means that it will be useful by saving time typing and spotting problems, but it makes functions and their behaviors more unpredictable.
+
+# References
