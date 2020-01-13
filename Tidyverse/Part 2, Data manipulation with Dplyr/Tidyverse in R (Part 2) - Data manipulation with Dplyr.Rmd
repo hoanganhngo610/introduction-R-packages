@@ -1,7 +1,7 @@
 ---
 title: 'Introduction to `tidyverse` (Part 2): Data manipulation with `dplyr`'
 author: Hoang Anh NGO (École Polytechnique)
-date: "16 December 2019"
+date: "13 January 2019"
 bibliography: references_dplyr.bib
 output: 
   html_document:

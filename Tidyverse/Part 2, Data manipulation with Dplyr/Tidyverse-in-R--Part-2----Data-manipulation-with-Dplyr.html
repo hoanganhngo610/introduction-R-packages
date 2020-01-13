@@ -12,7 +12,7 @@
 
 <meta name="author" content="Hoang Anh NGO (École Polytechnique)" />
 
-<meta name="date" content="2019-12-16" />
+<meta name="date" content="2019-01-13" />
 
 <title>Introduction to tidyverse (Part 2): Data manipulation with dplyr</title>
 
@@ -181,7 +181,7 @@ summary {
 
 <h1 class="title toc-ignore">Introduction to <code>tidyverse</code> (Part 2): Data manipulation with <code>dplyr</code></h1>
 <h4 class="author">Hoang Anh NGO (École Polytechnique)</h4>
-<h4 class="date">16 December 2019</h4>
+<h4 class="date">13 January 2019</h4>
 
 </div>
 
@@ -621,16 +621,16 @@ select(hflights, -(Year:DayofMonth))</code></pre>
 <pre><code>## # A tibble: 10 x 21
 ##     Year Month DayofMonth DayOfWeek DepTime ArrTime UniqueCarrier FlightNum
 ##    &lt;int&gt; &lt;int&gt;      &lt;int&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt; &lt;chr&gt;             &lt;int&gt;
-##  1  2011     4          3         7    1037    1404 XE                 2652
-##  2  2011    10         17         1    1728    1905 XE                 4157
-##  3  2011     1         17         1    1147    1325 XE                 3152
-##  4  2011     2          3         4      NA      NA XE                 2097
-##  5  2011     1         25         2    1633    1923 WN                   35
-##  6  2011     8         31         3    1937    2038 AA                  657
-##  7  2011    11          9         3    1249    1556 OO                 5171
-##  8  2011     8         10         3    2102    2218 OO                 1126
-##  9  2011    11         29         2    1537    1642 XE                 4293
-## 10  2011    10          9         7     643    1104 B6                  620
+##  1  2011     8          7         7    2106    2232 OO                 5835
+##  2  2011    10          6         4    1759    1849 WN                   48
+##  3  2011     5         28         6    1452    1510 OO                 1196
+##  4  2011     4         26         2    1139    1551 CO                  409
+##  5  2011    10          4         2    1823    1937 WN                 1592
+##  6  2011     3         17         4    1549    1625 OO                 1173
+##  7  2011     7         31         7    1700    1751 WN                   44
+##  8  2011     7         15         5    1503    1602 XE                 2025
+##  9  2011     7         16         6    2126    2227 MQ                 3724
+## 10  2011     4          7         4    2119    2244 CO                 1597
 ## # … with 13 more variables: TailNum &lt;chr&gt;, ActualElapsedTime &lt;int&gt;,
 ## #   AirTime &lt;int&gt;, ArrDelay &lt;int&gt;, DepDelay &lt;int&gt;, Origin &lt;chr&gt;,
 ## #   Dest &lt;chr&gt;, Distance &lt;int&gt;, TaxiIn &lt;int&gt;, TaxiOut &lt;int&gt;,
@@ -639,16 +639,16 @@ select(hflights, -(Year:DayofMonth))</code></pre>
 <pre><code>## # A tibble: 227 x 21
 ##     Year Month DayofMonth DayOfWeek DepTime ArrTime UniqueCarrier FlightNum
 ##    &lt;int&gt; &lt;int&gt;      &lt;int&gt;     &lt;int&gt;   &lt;int&gt;   &lt;int&gt; &lt;chr&gt;             &lt;int&gt;
-##  1  2011    12          6         2    1018    1327 WN                  953
-##  2  2011     3         27         7    1638    1746 WN                 1899
-##  3  2011     5         24         2    1912    2051 CO                 1826
-##  4  2011    10          6         4     642    1017 CO                 1174
-##  5  2011     1         26         3    1922    2237 XE                 2055
-##  6  2011    12          9         5     851    1207 US                 1415
-##  7  2011     8          7         7    1620    1659 WN                 1257
-##  8  2011     3         23         3    1937    2217 AS                  731
-##  9  2011     8         31         3    1559    1721 XE                 2920
-## 10  2011    11         14         1    2002    2051 WN                  207
+##  1  2011     1         18         2      NA      NA CO                  106
+##  2  2011     7         17         7    1908    2001 CO                 1048
+##  3  2011     6          6         1    1432    1600 CO                  137
+##  4  2011     7         11         1    1256    1626 CO                 1645
+##  5  2011     1         20         4    1120    1416 XE                 2340
+##  6  2011     9          2         5    1140    1254 CO                 1023
+##  7  2011     4         18         1    1447    1554 XE                 2025
+##  8  2011     5         14         6    1637    1804 XE                 2840
+##  9  2011     3         28         1    1301    1530 XE                 2041
+## 10  2011     6         28         2    1026    1357 AA                 1700
 ## # … with 217 more rows, and 13 more variables: TailNum &lt;chr&gt;,
 ## #   ActualElapsedTime &lt;int&gt;, AirTime &lt;int&gt;, ArrDelay &lt;int&gt;,
 ## #   DepDelay &lt;int&gt;, Origin &lt;chr&gt;, Dest &lt;chr&gt;, Distance &lt;int&gt;,
